@@ -4,3 +4,6 @@ coverage/
 .DS_Store
 *.log
 .env
+
+# Interviewer-only materials (solutions, answers, guides)
+interviewer/

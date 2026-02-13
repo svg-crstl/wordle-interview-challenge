@@ -64,28 +64,10 @@ describe('WordleService', () => {
     });
   });
 
-  /**
-   * ============================================================
-   * DUPLICATE LETTER TESTS
-   * 
-   * TODO: These tests currently FAIL because of Bug #1
-   * Fix the calculateLetterCodes method to make them pass
-   * ============================================================
-   */
-  describe('submitGuess - duplicate letters (BUG #1)', () => {
+  describe('submitGuess - duplicate letters', () => {
     it('should handle APPLE vs PAPER correctly', async () => {
-      // Answer: PAPER, Guess: APPLE
-      // A: Yellow (exists, wrong spot)
-      // P: Green (position 1 matches position 2 of PAPER... wait, let me recalculate)
-      // 
       // PAPER = P(0) A(1) P(2) E(3) R(4)
       // APPLE = A(0) P(1) P(2) L(3) E(4)
-      //
-      // A(0): Not at position 0 in PAPER, but A exists at position 1 → YELLOW
-      // P(1): Position 1 in PAPER is 'A', not 'P'. But P exists at 0,2 → YELLOW
-      // P(2): Position 2 in PAPER is 'P' → GREEN
-      // L(3): L not in PAPER → GREY
-      // E(4): Position 4 in PAPER is 'R', but E exists at position 3 → YELLOW
       
       const gameId = service.startGame({ answer: 'PAPER' });
       const result = await service.submitGuess(gameId, 'APPLE');
@@ -100,14 +82,8 @@ describe('WordleService', () => {
     });
 
     it('should handle SHEEP vs CREEP correctly', async () => {
-      // Answer: SHEEP = S(0) H(1) E(2) E(3) P(4)
-      // Guess:  CREEP = C(0) R(1) E(2) E(3) P(4)
-      //
-      // C(0): Not in SHEEP → GREY
-      // R(1): Not in SHEEP → GREY
-      // E(2): Position 2 in SHEEP is 'E' → GREEN
-      // E(3): Position 3 in SHEEP is 'E' → GREEN
-      // P(4): Position 4 in SHEEP is 'P' → GREEN
+      // SHEEP = S(0) H(1) E(2) E(3) P(4)
+      // CREEP = C(0) R(1) E(2) E(3) P(4)
       
       const gameId = service.startGame({ answer: 'SHEEP' });
       const result = await service.submitGuess(gameId, 'CREEP');
@@ -122,23 +98,8 @@ describe('WordleService', () => {
     });
 
     it('should handle excess duplicate letters as GREY', async () => {
-      // Answer: CRANE (one A)
-      // Guess:  ABATE (three A's)
-      // 
-      // CRANE = C(0) R(1) A(2) N(3) E(4)
-      // ABATE = A(0) B(1) A(2) T(3) E(4)
-      //
-      // A(0): Not at 0, but A exists at 2 → YELLOW (uses up the one A)
-      // B(1): Not in CRANE → GREY
-      // A(2): Correct position → GREEN... but wait, we already used the A?
-      //       Actually GREEN should take priority! Process GREENs first.
-      // T(3): Not in CRANE → GREY
-      // E(4): Correct position → GREEN
-      //
-      // Correct approach: Process GREENs first, then YELLOWs
-      // A(2) → GREEN (uses the A)
-      // A(0) → GREY (no more A's available)
-      // E(4) → GREEN
+      // CRANE = C(0) R(1) A(2) N(3) E(4) - only one A
+      // ABATE = A(0) B(1) A(2) T(3) E(4) - two A's
       
       const gameId = service.startGame({ answer: 'CRANE' });
       const result = await service.submitGuess(gameId, 'ABATE');
@@ -152,20 +113,9 @@ describe('WordleService', () => {
       ]);
     });
 
-    // TODO: Add more edge cases you identify
-    // Hint: What about when answer has duplicates but guess doesn't?
-    // Hint: What about triple letters?
   });
 
-  /**
-   * ============================================================
-   * VALIDATION TESTS
-   * 
-   * TODO: These tests currently FAIL because of Bug #2
-   * Add validation to submitGuess to make them pass
-   * ============================================================
-   */
-  describe('submitGuess - validation (BUG #2)', () => {
+  describe('submitGuess - validation', () => {
     it('should reject guess with wrong length', async () => {
       const gameId = service.startGame({ answer: 'REACT' });
       
@@ -185,24 +135,13 @@ describe('WordleService', () => {
 
     it('should accept valid dictionary words', async () => {
       const gameId = service.startGame({ answer: 'REACT' });
-      
-      // APPLE is in our dictionary
+
       const result = await service.submitGuess(gameId, 'APPLE');
       expect(result.guess).toBe('APPLE');
     });
-
-    // TODO: What about empty string? Null? Numbers?
   });
 
-  /**
-   * ============================================================
-   * CONCURRENCY TESTS
-   * 
-   * TODO: These tests currently FAIL because of Bug #3
-   * Make the service thread-safe to fix them
-   * ============================================================
-   */
-  describe('submitGuess - concurrency (BUG #3)', () => {
+  describe('submitGuess - concurrency', () => {
     it('should not allow more guesses than maxGuesses with concurrent requests', async () => {
       const gameId = service.startGame({ answer: 'REACT', maxGuesses: 2 });
       

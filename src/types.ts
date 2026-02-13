@@ -36,6 +36,8 @@ export interface GameState {
 export interface GameOptions {
   answer?: string;       // Override random answer (for testing)
   maxGuesses?: number;   // Default: 6
+  hardMode?: boolean;    // Hard mode: must use revealed hints (Phase 2, Track C)
+  dailyPuzzle?: boolean; // Daily puzzle mode (Phase 2, Track B)
 }
 
 /**

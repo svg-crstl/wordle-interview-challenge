@@ -7,7 +7,9 @@
     "build": "tsc",
     "demo": "npx ts-node src/index.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:phase1": "jest WordleService.test.ts",
+    "test:phase2": "jest WordleSolver.test.ts"
   },
   "engines": {
     "node": ">=20.0.0"
